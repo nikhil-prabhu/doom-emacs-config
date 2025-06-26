@@ -74,4 +74,7 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
-;; Enable Gravatars for Magit
+(use-package! magit-todos
+  :defer t
+  :init (after! magit (require 'magit-todos))
+  :config (magit-todos-mode 1))
