@@ -49,3 +49,4 @@
 ;; (unpin! t)
 
 (package! magit-todos)
+(package! prometheus-mode)

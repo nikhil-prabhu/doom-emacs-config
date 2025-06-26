@@ -83,3 +83,7 @@
   :defer t
   :init (after! magit (require 'magit-todos))
   :config (magit-todos-mode 1))
+
+;; Add prometheus mode
+(use-package! prometheus-mode
+  :defer t)
