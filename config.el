@@ -75,11 +75,10 @@
 ;; they are implemented.
 
 ;; Enable Gravatars for Magit
-
 (after! magit
   (setq magit-revision-show-gravatars '("^Author:     " . "^Commit:     ")))
 
-
+;; Load magit-todos after Magit
 (use-package! magit-todos
   :defer t
   :init (after! magit (require 'magit-todos))
