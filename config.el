@@ -74,6 +74,12 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
+;; Enable Gravatars for Magit
+
+(after! magit
+  (setq magit-revision-show-gravatars '("^Author:     " . "^Commit:     ")))
+
+
 (use-package! magit-todos
   :defer t
   :init (after! magit (require 'magit-todos))
