@@ -50,3 +50,5 @@
 
 (package! magit-todos)
 (package! prometheus-mode)
+(package! copilot)
+(package! copilot-chat)
