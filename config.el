@@ -91,6 +91,7 @@
 ;; Accept completion from copilot and fallback to corfu
 (use-package! copilot
   :defer t
+  :init (after! prog-mode (require 'copilot))
   :hook (prog-mode . copilot-mode)
   :bind (:map copilot-completion-map
               ("<tab>" . 'copilot-accept-completion)
