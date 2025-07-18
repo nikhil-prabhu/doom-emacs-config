@@ -108,10 +108,10 @@
   :init (after! flycheck-mode (require 'flyover))
   :hook (flycheck-mode . flyover-mode)
   :config
-  (setq flyover-levels '(error warning info))
-  (setq flyover-use-theme-colors t)
-  (setq flyover-background-lightness 45)
-  (setq flyover-percent-darker 40)
-  (setq flyover-text-tint 'lighter)
-  (setq flyover-text-tint-percent 50)
-  (setq flyover-virtual-line-type 'straight-arrow))
+  (setq flyover-levels '(error warning info)
+        flyover-use-theme-colors t
+        flyover-background-lightness 45
+        flyover-percent-darker 40
+        flyover-text-tint 'lighter
+        flyover-text-tint-percent 50
+        flyover-virtual-line-type 'straight-arrow))
