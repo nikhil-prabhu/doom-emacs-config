@@ -101,3 +101,16 @@
               ("TAB" . 'copilot-accept-completion)
               ("C-TAB" . 'copilot-accept-completion-by-word)
               ("C-<tab>" . 'copilot-accept-completion-by-word)))
+
+;; Enable flyover mode for flycheck
+(use-package! flyover
+  :defer t
+  :init (after! flycheck-mode (require 'flyover))
+  :hook (flycheck-mode . flyover-mode)
+  :config
+  (setq flyover-levels '(error warning info))
+  (setq flyover-use-theme-colors t)
+  (setq flyover-background-lightness 45)
+  (setq flyover-percent-darker 40)
+  (setq flyover-text-tint 'lighter)
+  (setq flyover-text-tint-percent 50))

@@ -52,3 +52,4 @@
 (package! prometheus-mode)
 (package! copilot)
 (package! copilot-chat)
+(package! flyover)
