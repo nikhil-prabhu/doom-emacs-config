@@ -113,4 +113,5 @@
   (setq flyover-background-lightness 45)
   (setq flyover-percent-darker 40)
   (setq flyover-text-tint 'lighter)
-  (setq flyover-text-tint-percent 50))
+  (setq flyover-text-tint-percent 50)
+  (setq flyover-virtual-line-type 'straight-arrow))
