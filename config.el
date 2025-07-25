@@ -115,3 +115,11 @@
         flyover-text-tint 'lighter
         flyover-text-tint-percent 50
         flyover-virtual-line-type 'straight-arrow))
+
+;; Enable evil-numbers for incrementing/decrementing numbers
+(use-package! evil-numbers
+  :defer t
+  :init (after! evil (require 'evil-numbers))
+  :bind (:map evil-normal-state-map
+              ("C-+" . 'evil-numbers/inc-at-pt)
+              ("C--" . 'evil-numbers/dec-at-pt)))

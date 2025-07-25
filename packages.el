@@ -53,3 +53,4 @@
 (package! copilot)
 (package! copilot-chat)
 (package! flyover)
+(package! evil-numbers)
