@@ -52,5 +52,5 @@
 (package! prometheus-mode)
 (package! copilot)
 (package! copilot-chat)
-(package! flyover)
+;; (package! flyover)
 (package! evil-numbers)

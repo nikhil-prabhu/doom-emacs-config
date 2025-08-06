@@ -103,18 +103,18 @@
               ("C-<tab>" . 'copilot-accept-completion-by-word)))
 
 ;; Enable flyover mode for flycheck
-(use-package! flyover
-  :defer t
-  :init (after! flycheck-mode (require 'flyover))
-  :hook (flycheck-mode . flyover-mode)
-  :config
-  (setq flyover-levels '(error warning info)
-        flyover-use-theme-colors t
-        flyover-background-lightness 45
-        flyover-percent-darker 40
-        flyover-text-tint 'lighter
-        flyover-text-tint-percent 50
-        flyover-virtual-line-type 'straight-arrow))
+;; (use-package! flyover
+;;   :defer t
+;;   :init (after! flycheck-mode (require 'flyover))
+;;   :hook (flycheck-mode . flyover-mode)
+;;   :config
+;;   (setq flyover-levels '(error warning info)
+;;         flyover-use-theme-colors t
+;;         flyover-background-lightness 45
+;;         flyover-percent-darker 40
+;;         flyover-text-tint 'lighter
+;;         flyover-text-tint-percent 50
+;;         flyover-virtual-line-type 'straight-arrow))
 
 ;; Enable evil-numbers for incrementing/decrementing numbers
 (use-package! evil-numbers
