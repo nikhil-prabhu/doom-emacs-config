@@ -123,3 +123,52 @@
   :bind (:map evil-normal-state-map
               ("C-+" . 'evil-numbers/inc-at-pt)
               ("C--" . 'evil-numbers/dec-at-pt)))
+
+;; Custom function(s) to open terminal in current directory
+(defun my/get-terminal-command ()
+  "Get the appropriate terminal command for the current OS."
+  (cond
+   ;; Check for ghostty first (cross-platform)
+   ((executable-find "ghostty") "ghostty")
+   ;; macOS specific terminals
+   ((eq system-type 'darwin)
+    (cond
+     ((file-exists-p "/Applications/iTerm.app") "iterm2")
+     (t "terminal"))) ; macOS default Terminal
+   ;; Linux terminals
+   ((executable-find "konsole") "konsole")
+   ;; Final fallback
+   (t "xterm")))
+
+(defun my/open-terminal-here ()
+  "Open terminal in current directory."
+  (interactive)
+  (let* ((dir (if (buffer-file-name)
+                  (file-name-directory (buffer-file-name))
+                default-directory))
+         (terminal (my/get-terminal-command))
+         (cmd (cond
+               ;; Ghostty (cross-platform)
+               ((string-match "ghostty" terminal)
+                (format "%s --working-directory=%s" terminal (shell-quote-argument dir)))
+
+               ;; macOS terminals using AppleScript
+               ((string-match "iterm2" terminal)
+                (format "osascript -e 'tell application \"iTerm2\"' -e 'create window with default profile' -e 'tell current session of current window' -e 'write text \"cd %s\"' -e 'end tell' -e 'end tell'"
+                        (shell-quote-argument dir)))
+
+               ((string-match "terminal" terminal)
+                (format "osascript -e 'tell application \"Terminal\"' -e 'do script \"cd %s\"' -e 'end tell'"
+                        (shell-quote-argument dir)))
+
+               ;; Linux terminals
+               ((string-match "konsole" terminal)
+                (format "%s --workdir %s" terminal (shell-quote-argument dir)))
+
+               ;; Final fallback
+               (t (format "%s -e 'cd %s'" terminal (shell-quote-argument dir))))))
+    (start-process "terminal" nil "sh" "-c" cmd)))
+
+(map! :leader
+      :desc "Open terminal here"
+      "o t" #'my/open-terminal-here)
