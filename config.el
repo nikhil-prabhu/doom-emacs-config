@@ -172,3 +172,103 @@
 (map! :leader
       :desc "Open terminal here"
       "o t" #'my/open-terminal-here)
+
+;; Custom function(s) to open diffs and merge conflicts in Kompare
+(defun my/magit-kompare-diff ()
+  "Open diff in Kompare based on context."
+  (interactive)
+  (if (not (executable-find "kompare"))
+      (call-interactively #'magit-ediff-dwim)
+    (let ((commit-at-point (magit-commit-at-point)))
+      (if commit-at-point
+          (my/magit-kompare-commit-vs-head commit-at-point)
+        (my/magit-kompare-select-commits)))))
+
+(defun my/magit-kompare-commit-vs-head (commit)
+  "Compare COMMIT with HEAD using Kompare."
+  (let* ((files (magit-changed-files commit "HEAD")))
+    (if (null files)
+        (message "No differences between %s and HEAD" (magit-rev-abbrev commit))
+      (if (= (length files) 1)
+          (my/magit-kompare-file-between-commits (car files) commit "HEAD")
+        (let ((file (magit-completing-read "File to diff" files)))
+          (my/magit-kompare-file-between-commits file commit "HEAD"))))))
+
+(defun my/magit-kompare-select-commits ()
+  "Select two commits/refs to compare in Kompare."
+  (interactive)
+  (let* ((rev1 (magit-read-branch-or-commit "First commit/ref"))
+         (rev2 (magit-read-branch-or-commit "Second commit/ref" rev1))
+         (files (magit-changed-files rev1 rev2)))
+    (if (null files)
+        (message "No differences between %s and %s" rev1 rev2)
+      (if (= (length files) 1)
+          (my/magit-kompare-file-between-commits (car files) rev1 rev2)
+        (let ((file (magit-completing-read "File to diff" files)))
+          (my/magit-kompare-file-between-commits file rev1 rev2))))))
+
+(defun my/magit-kompare-file-between-commits (file rev1 rev2)
+  "Compare FILE between REV1 and REV2 using Kompare."
+  (let* ((rev1-short (magit-rev-abbrev rev1))
+         (rev2-short (magit-rev-abbrev rev2))
+         (file-base (file-name-nondirectory file))
+         (file-dir (file-name-directory file))
+         (safe-dir (if file-dir
+                       (replace-regexp-in-string "[^a-zA-Z0-9_-]" "_" file-dir)
+                     ""))
+         (temp1 (make-temp-file (format "%s_%s_%s" rev1-short safe-dir file-base)))
+         (temp2 (make-temp-file (format "%s_%s_%s" rev2-short safe-dir file-base))))
+
+    (with-temp-file temp1
+      (condition-case nil
+          (magit-git-insert "show" (concat rev1 ":" file))
+        (error "")))
+
+    (with-temp-file temp2
+      (condition-case nil
+          (magit-git-insert "show" (concat rev2 ":" file))
+        (error "")))
+
+    (start-process "kompare" nil "kompare" temp1 temp2)
+
+    (run-at-time "15 sec" nil
+                 (lambda ()
+                   (ignore-errors (delete-file temp1))
+                   (ignore-errors (delete-file temp2))))))
+
+(defun my/magit-kompare-merge-conflict ()
+  "Open merge conflict in Kompare for easier resolution."
+  (interactive)
+  (if (not (executable-find "kompare"))
+      (call-interactively #'magit-ediff-resolve)
+    (when-let ((file (magit-file-at-point)))
+      (if (magit-file-status file)
+          (let* ((file-base (file-name-nondirectory file))
+                 (file-dir (file-name-directory file))
+                 (safe-dir (if file-dir
+                               (replace-regexp-in-string "[^a-zA-Z0-9_-]" "_" file-dir)
+                             ""))
+                 (temp-ours (make-temp-file (format "OURS_%s%s" safe-dir file-base)))
+                 (temp-theirs (make-temp-file (format "THEIRS_%s%s" safe-dir file-base))))
+
+            (with-temp-file temp-ours
+              (condition-case nil
+                  (magit-git-insert "show" (concat ":2:" file))
+                (error "")))
+
+            (with-temp-file temp-theirs
+              (condition-case nil
+                  (magit-git-insert "show" (concat ":3:" file))
+                (error "")))
+
+            (start-process "kompare" nil "kompare" temp-ours temp-theirs)
+
+            (run-at-time "15 sec" nil
+                         (lambda ()
+                           (ignore-errors (delete-file temp-ours))
+                           (ignore-errors (delete-file temp-theirs)))))
+        (message "No merge conflict in this file")))))
+
+(with-eval-after-load 'magit
+  (define-key magit-mode-map (kbd "C-c k") #'my/magit-kompare-diff)
+  (define-key magit-mode-map (kbd "C-c M") #'my/magit-kompare-merge-conflict))
