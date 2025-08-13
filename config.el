@@ -214,8 +214,8 @@
          (file-base (file-name-nondirectory file))
          (file-dir (file-name-directory file))
          (safe-dir (if file-dir
-                       (replace-regexp-in-string "[^a-zA-Z0-9_-]" "_" file-dir)
-                     ""))
+                      (replace-regexp-in-string "[^a-zA-Z0-9_-]" "_" file-dir)
+                    ""))
          (temp1 (make-temp-file (format "%s_%s_%s" rev1-short safe-dir file-base)))
          (temp2 (make-temp-file (format "%s_%s_%s" rev2-short safe-dir file-base))))
 
@@ -246,8 +246,8 @@
           (let* ((file-base (file-name-nondirectory file))
                  (file-dir (file-name-directory file))
                  (safe-dir (if file-dir
-                               (replace-regexp-in-string "[^a-zA-Z0-9_-]" "_" file-dir)
-                             ""))
+                              (replace-regexp-in-string "[^a-zA-Z0-9_-]" "_" file-dir)
+                            ""))
                  (temp-ours (make-temp-file (format "OURS_%s%s" safe-dir file-base)))
                  (temp-theirs (make-temp-file (format "THEIRS_%s%s" safe-dir file-base))))
 
@@ -269,6 +269,19 @@
                            (ignore-errors (delete-file temp-theirs)))))
         (message "No merge conflict in this file")))))
 
+(defun my/magit-gitkraken-open ()
+  "Open current repository in GitKraken."
+  (interactive)
+  (if (not (executable-find "gitkraken"))
+      (message "GitKraken not found")
+    (let ((repo-path (magit-toplevel)))
+      (if repo-path
+          (progn
+            (start-process "gitkraken" nil "gitkraken" "--path" repo-path)
+            (message "Opened repository in GitKraken"))
+        (message "Not in a Git repository")))))
+
 (with-eval-after-load 'magit
   (define-key magit-mode-map (kbd "C-c k") #'my/magit-kompare-diff)
-  (define-key magit-mode-map (kbd "C-c M") #'my/magit-kompare-merge-conflict))
+  (define-key magit-mode-map (kbd "C-c M") #'my/magit-kompare-merge-conflict)
+  (define-key magit-mode-map (kbd "C-c g") #'my/magit-gitkraken-open))
