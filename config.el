@@ -214,8 +214,8 @@
          (file-base (file-name-nondirectory file))
          (file-dir (file-name-directory file))
          (safe-dir (if file-dir
-                      (replace-regexp-in-string "[^a-zA-Z0-9_-]" "_" file-dir)
-                    ""))
+                       (replace-regexp-in-string "[^a-zA-Z0-9_-]" "_" file-dir)
+                     ""))
          (temp1 (make-temp-file (format "%s_%s_%s" rev1-short safe-dir file-base)))
          (temp2 (make-temp-file (format "%s_%s_%s" rev2-short safe-dir file-base))))
 
@@ -246,8 +246,8 @@
           (let* ((file-base (file-name-nondirectory file))
                  (file-dir (file-name-directory file))
                  (safe-dir (if file-dir
-                              (replace-regexp-in-string "[^a-zA-Z0-9_-]" "_" file-dir)
-                            ""))
+                               (replace-regexp-in-string "[^a-zA-Z0-9_-]" "_" file-dir)
+                             ""))
                  (temp-ours (make-temp-file (format "OURS_%s%s" safe-dir file-base)))
                  (temp-theirs (make-temp-file (format "THEIRS_%s%s" safe-dir file-base))))
 
