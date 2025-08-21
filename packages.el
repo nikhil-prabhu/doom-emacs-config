@@ -54,3 +54,4 @@
 (package! copilot-chat)
 ;; (package! flyover)
 (package! evil-numbers)
+(package! protobuf-mode)

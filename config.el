@@ -124,6 +124,11 @@
               ("C-+" . 'evil-numbers/inc-at-pt)
               ("C--" . 'evil-numbers/dec-at-pt)))
 
+;; Enable protobuf mode for .proto files
+(use-package! protobuf-mode
+  :defer t
+  :mode ("\\.proto\\'" . protobuf-mode))
+
 ;; Custom function(s) to open terminal in current directory
 (defun my/get-terminal-command ()
   "Get the appropriate terminal command for the current OS."
